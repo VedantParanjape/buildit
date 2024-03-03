@@ -311,7 +311,35 @@ block::stmt::Ptr builder_context::extract_ast_from_function_impl(void) {
 
 	block::dominator_analysis dom(BBs);
 	block::dominator_analysis post_dom(post_BBs, true);
-	
+
+	std::cerr << "++++++ loop info ++++++ \n";
+	block::loop_info LI(BBs, dom, post_dom);
+	for (auto loop: LI.loops) {
+		dump(*loop);
+	}
+
+	std::cerr << "++++++ top level loops ++++++ \n";
+	for (auto top_level_loop: LI.top_level_loops) std::cerr << "(loop header: " << top_level_loop->header_block->id << ") ";
+	std::cerr << "\n";
+
+	std::cerr << "++++++ preorder loops tree ++++++ \n";
+	for (auto loop_tree: LI.preorder_loops_map) {
+		std::cerr << "loop tree root: (loop header: " << LI.loops[loop_tree.first]->header_block->id << ")\n";
+		std::cerr << "preorder: ";
+		for (auto node: loop_tree.second) std::cerr << node << " ";
+		std::cerr << "\n";
+	}
+
+	std::cerr << "++++++ postorder loops tree ++++++ \n";
+	for (auto loop_tree: LI.postorder_loops_map) {
+		std::cerr << "loop tree root: (loop header: " << LI.loops[loop_tree.first]->header_block->id << ")\n";
+		std::cerr << "postorder: ";
+		for (auto node: loop_tree.second) std::cerr << node << " ";
+		std::cerr << "\n";
+	}
+
+	std::cerr << "++++++ loop info ++++++ \n";
+
 	block::loop_finder finder;
 	finder.ast = ast;
 	ast->accept(&finder);
