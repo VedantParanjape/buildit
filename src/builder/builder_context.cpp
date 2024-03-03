@@ -340,9 +340,13 @@ block::stmt::Ptr builder_context::extract_ast_from_function_impl(void) {
 
 	std::cerr << "++++++ loop info ++++++ \n";
 
-	block::loop_finder finder;
-	finder.ast = ast;
-	ast->accept(&finder);
+	std::cerr << "++++++ convert to ast ++++++ \n";
+	ast = LI.convert_to_ast(block::to<block::stmt_block>(ast));
+	std::cerr << "++++++ convert to ast ++++++ \n";
+
+	// block::loop_finder finder;
+	// finder.ast = ast;
+	// ast->accept(&finder);
 
 	block::for_loop_finder for_finder;
 	for_finder.ast = ast;
